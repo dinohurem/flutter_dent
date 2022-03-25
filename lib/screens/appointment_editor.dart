@@ -8,21 +8,32 @@ class AppointmentEditor extends StatefulWidget {
 }
 
 class AppointmentEditorState extends State<AppointmentEditor> {
+  int _appointmentDuration = 0;
+
+  @override
+  void initState() {
+    _currentColor = _currentColor;
+    _appointmentDuration = _endDate.difference(_startDate).inMinutes;
+    super.initState();
+  }
+
+  void changeColor(Color color) => setState(() => _currentColor = color);
+
   Widget _getAppointmentEditor(BuildContext context) {
     return Container(
         color: Colors.white,
         child: ListView(
           padding: const EdgeInsets.all(0),
           children: <Widget>[
-            ListTile(
-              contentPadding: const EdgeInsets.fromLTRB(5, 0, 25, 5),
-              leading: const Text(''),
-              title: TextField(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(5, 0, 25, 5),
+              child: TextField(
                 controller: TextEditingController(text: _subject),
                 onChanged: (String value) {
                   _subject = value;
                 },
-                keyboardType: TextInputType.multiline,
+                enabled: true,
+                keyboardType: TextInputType.text,
                 maxLines: null,
                 style: const TextStyle(
                   fontSize: 25,
@@ -64,8 +75,6 @@ class AppointmentEditorState extends State<AppointmentEditor> {
 
                         if (date != null && date != _startDate) {
                           setState(() {
-                            final Duration difference =
-                                _endDate.difference(_startDate);
                             _startDate = DateTime(
                                 date.year,
                                 date.month,
@@ -73,64 +82,22 @@ class AppointmentEditorState extends State<AppointmentEditor> {
                                 _startTime.hour,
                                 _startTime.minute,
                                 0);
-                            _endDate = _startDate.add(difference);
+
+                            _endDate = DateTime(
+                                _endDate.year,
+                                _endDate.month,
+                                _endDate.day,
+                                _endTime.hour,
+                                _endTime.minute,
+                                0);
+
                             _endTime = TimeOfDay(
                                 hour: _endDate.hour, minute: _endDate.minute);
                           });
                         }
                       },
                     ),
-                  ),
-
-                  // Time picker.
-                  Expanded(
-                    flex: 3,
-                    child: _isAllDay
-                        ? const Text('')
-                        : GestureDetector(
-                            child: Text(
-                              DateFormat('hh:mm a').format(_startDate),
-                              textAlign: TextAlign.right,
-                            ),
-                            onTap: () async {
-                              final TimeOfDay? time = await showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay(
-                                    hour: _startTime.hour,
-                                    minute: _startTime.minute),
-                                builder: (context, childWidget) {
-                                  return MediaQuery(
-                                      data: MediaQuery.of(context).copyWith(
-                                          // Using 24-Hour format
-                                          alwaysUse24HourFormat: true),
-                                      // If you want 12-Hour format, just change alwaysUse24HourFormat to false or remove all the builder argument
-                                      child: childWidget!);
-                                },
-                              );
-
-                              if (time != null && time != _startTime) {
-                                setState(
-                                  () {
-                                    _startTime = time;
-                                    final Duration difference =
-                                        _endDate.difference(_startDate);
-                                    _startDate = DateTime(
-                                        _startDate.year,
-                                        _startDate.month,
-                                        _startDate.day,
-                                        _startTime.hour,
-                                        _startTime.minute,
-                                        0);
-                                    _endDate = _startDate.add(difference);
-                                    _endTime = TimeOfDay(
-                                        hour: _endDate.hour,
-                                        minute: _endDate.minute);
-                                  },
-                                );
-                              }
-                            },
-                          ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -139,100 +106,73 @@ class AppointmentEditorState extends State<AppointmentEditor> {
               thickness: 1,
             ),
 
-            // 2nd date picker.
+            // Time picker.
             ListTile(
               contentPadding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
               leading: const Icon(
-                Icons.calendar_today,
-                color: Colors.grey,
+                Icons.watch_later,
+              ),
+              title: GestureDetector(
+                child: Text(
+                  DateFormat('hh:mm a').format(_startDate),
+                ),
+                onTap: () async {
+                  final TimeOfDay? time = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(
+                        hour: _startTime.hour, minute: _startTime.minute),
+                    builder: (context, childWidget) {
+                      return MediaQuery(
+                          data: MediaQuery.of(context)
+                              .copyWith(alwaysUse24HourFormat: true),
+                          child: childWidget!);
+                    },
+                  );
+
+                  if (time != null && time != _startTime) {
+                    setState(
+                      () {
+                        _startTime = time;
+
+                        _startDate = DateTime(
+                            _startDate.year,
+                            _startDate.month,
+                            _startDate.day,
+                            _startTime.hour,
+                            _startTime.minute,
+                            0);
+
+                        _endTime = _startTime.plusMinutes(_appointmentDuration);
+                        _endDate = DateTime(_endDate.year, _endDate.month,
+                            _endDate.day, _endTime.hour, _endTime.minute, 0);
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+            const Divider(
+              height: 1.0,
+              thickness: 1,
+            ),
+            ListTile(
+              contentPadding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+              leading: const Icon(
+                Icons.timer,
               ),
               title: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    flex: 7,
-                    child: GestureDetector(
-                      child: Text(
-                        DateFormat('EEE, MMM dd yyyy').format(_endDate),
-                        textAlign: TextAlign.left,
-                      ),
-                      onTap: () async {
-                        final DateTime? date = await showDatePicker(
-                          context: context,
-                          initialDate: _endDate,
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime(2100),
-                        );
-
-                        if (date != null && date != _endDate) {
-                          setState(
-                            () {
-                              final Duration difference =
-                                  _endDate.difference(_startDate);
-                              _endDate = DateTime(date.year, date.month,
-                                  date.day, _endTime.hour, _endTime.minute, 0);
-                              if (_endDate.isBefore(_startDate)) {
-                                _startDate = _endDate.subtract(difference);
-                                _startTime = TimeOfDay(
-                                    hour: _startDate.hour,
-                                    minute: _startDate.minute);
-                              }
-                            },
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: _isAllDay
-                        ? const Text('')
-                        : GestureDetector(
-                            child: Text(
-                              DateFormat('hh:mm a').format(_endDate),
-                              textAlign: TextAlign.right,
-                            ),
-                            onTap: () async {
-                              final TimeOfDay? time = await showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay(
-                                    hour: _endTime.hour,
-                                    minute: _endTime.minute),
-                                builder: (context, childWidget) {
-                                  return MediaQuery(
-                                      data: MediaQuery.of(context).copyWith(
-                                          // Using 24-Hour format
-                                          alwaysUse24HourFormat: true),
-                                      // If you want 12-Hour format, just change alwaysUse24HourFormat to false or remove all the builder argument
-                                      child: childWidget!);
-                                },
-                              );
-
-                              if (time != null && time != _endTime) {
-                                setState(
-                                  () {
-                                    _endTime = time;
-                                    final Duration difference =
-                                        _endDate.difference(_startDate);
-                                    _endDate = DateTime(
-                                        _endDate.year,
-                                        _endDate.month,
-                                        _endDate.day,
-                                        _endTime.hour,
-                                        _endTime.minute,
-                                        0);
-                                    if (_endDate.isBefore(_startDate)) {
-                                      _startDate =
-                                          _endDate.subtract(difference);
-                                      _startTime = TimeOfDay(
-                                          hour: _startDate.hour,
-                                          minute: _startDate.minute);
-                                    }
-                                  },
-                                );
-                              }
-                            },
-                          ),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  NumberPicker(
+                    value: _appointmentDuration,
+                    minValue: 0,
+                    maxValue: 120,
+                    itemHeight: 35,
+                    itemCount: 4,
+                    infiniteLoop: true,
+                    onChanged: (value) =>
+                        setState(() => _appointmentDuration = value),
+                    haptics: true,
                   ),
                 ],
               ),
@@ -243,17 +183,30 @@ class AppointmentEditorState extends State<AppointmentEditor> {
             ),
             ListTile(
               contentPadding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
-              leading: Icon(Icons.lens,
-                  color: _colorCollection[_selectedColorIndex]),
+              leading: Icon(Icons.rectangle, color: _currentColor),
               title: Text(
-                _colorNames[_selectedColorIndex],
+                _currentColor.toString().contains('Material')
+                    ? 'Please choose a color'
+                    : '#${_currentColor.value.toRadixString(16).substring(2, 8)}',
+                style: const TextStyle(fontWeight: FontWeight.w400),
               ),
               onTap: () {
                 showDialog<Widget>(
                   context: context,
                   barrierDismissible: true,
                   builder: (BuildContext context) {
-                    return _ColorPicker();
+                    return AlertDialog(
+                      titlePadding: const EdgeInsets.all(0),
+                      contentPadding: const EdgeInsets.all(0),
+                      content: SingleChildScrollView(
+                        child: MaterialPicker(
+                          pickerColor: Colors.red,
+                          onColorChanged: changeColor,
+                          enableLabel: true,
+                          portraitOnly: false,
+                        ),
+                      ),
+                    );
                   },
                 ).then((dynamic value) => setState(() {}));
               },
@@ -302,7 +255,7 @@ class AppointmentEditorState extends State<AppointmentEditor> {
               title: Text(
                 getTile(),
               ),
-              backgroundColor: _colorCollection[_selectedColorIndex],
+              backgroundColor: _currentColor,
               leading: IconButton(
                 icon: const Icon(
                   Icons.close,
@@ -332,9 +285,8 @@ class AppointmentEditorState extends State<AppointmentEditor> {
                       Meeting(
                         from: _startDate,
                         to: _endDate,
-                        background: _colorCollection[_selectedColorIndex],
+                        background: _currentColor,
                         description: _notes,
-                        isAllDay: _isAllDay,
                         eventName: _subject == '' ? '(No title)' : _subject,
                       ),
                     );

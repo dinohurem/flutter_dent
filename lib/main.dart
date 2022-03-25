@@ -1,13 +1,13 @@
 library event_calendar;
 
 import 'dart:math';
-import 'package:day_night_time_picker/day_night_time_picker.dart';
-import 'package:day_night_time_picker/lib/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_provider/extensions/time_of_day_extension.dart';
 import 'package:intl/intl.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-part 'screens/color_picker.dart';
 part 'screens/appointment_editor.dart';
 
 void main() => runApp(
@@ -25,9 +25,8 @@ class EventCalendar extends StatefulWidget {
   EventCalendarState createState() => EventCalendarState();
 }
 
+late Color _currentColor;
 List<Color> _colorCollection = <Color>[];
-List<String> _colorNames = <String>[];
-int _selectedColorIndex = 0;
 List<String> _timeZoneCollection = <String>[];
 late DataSource _events;
 Meeting? _selectedAppointment;
@@ -35,7 +34,6 @@ late DateTime _startDate;
 late TimeOfDay _startTime;
 late DateTime _endDate;
 late TimeOfDay _endTime;
-bool _isAllDay = false;
 String _subject = '';
 String _notes = '';
 
@@ -52,7 +50,6 @@ class EventCalendarState extends State<EventCalendar> {
     appointments = getMeetingDetails();
     _events = DataSource(appointments);
     _selectedAppointment = null;
-    _selectedColorIndex = 0;
     _subject = '';
     _notes = '';
     super.initState();
@@ -112,8 +109,6 @@ class EventCalendarState extends State<EventCalendar> {
 
     setState(() {
       _selectedAppointment = null;
-      _isAllDay = false;
-      _selectedColorIndex = 0;
       _subject = '';
       _notes = '';
       if (_calendarView == CalendarView.month) {
@@ -124,14 +119,12 @@ class EventCalendarState extends State<EventCalendar> {
           final Meeting meetingDetails = calendarTapDetails.appointments![0];
           _startDate = meetingDetails.from;
           _endDate = meetingDetails.to;
-          _isAllDay = meetingDetails.isAllDay;
-          _selectedColorIndex =
-              _colorCollection.indexOf(meetingDetails.background);
           _subject = meetingDetails.eventName == '(No title)'
               ? ''
               : meetingDetails.eventName;
           _notes = meetingDetails.description;
           _selectedAppointment = meetingDetails;
+          _currentColor = meetingDetails.background;
         } else {
           final DateTime date = calendarTapDetails.date!;
           _startDate = date;
@@ -140,6 +133,7 @@ class EventCalendarState extends State<EventCalendar> {
         _startTime =
             TimeOfDay(hour: _startDate.hour, minute: _startDate.minute);
         _endTime = TimeOfDay(hour: _endDate.hour, minute: _endDate.minute);
+
         Navigator.push<Widget>(
           context,
           MaterialPageRoute(
@@ -175,17 +169,6 @@ class EventCalendarState extends State<EventCalendar> {
     _colorCollection.add(const Color(0xFFE47C73));
     _colorCollection.add(const Color(0xFF636363));
 
-    _colorNames = <String>[];
-    _colorNames.add('Green');
-    _colorNames.add('Purple');
-    _colorNames.add('Red');
-    _colorNames.add('Orange');
-    _colorNames.add('Caramel');
-    _colorNames.add('Magenta');
-    _colorNames.add('Blue');
-    _colorNames.add('Peach');
-    _colorNames.add('Gray');
-
     _timeZoneCollection = <String>[];
     _timeZoneCollection.add('Default Time');
     _timeZoneCollection.add('Central European Standard Time');
@@ -201,12 +184,9 @@ class EventCalendarState extends State<EventCalendar> {
                 .add(Duration(hours: hour)),
             to: today
                 .add(Duration(days: (month * 30) + day))
-                .add(Duration(hours: hour + 2)),
+                .add(Duration(hours: hour + 1)),
             background: _colorCollection[random.nextInt(9)],
-            startTimeZone: '',
-            endTimeZone: '',
             description: '',
-            isAllDay: false,
             eventName: eventNameCollection[random.nextInt(7)],
           ));
         }
@@ -229,13 +209,7 @@ class DataSource extends CalendarDataSource {
   String getSubject(int index) => appointments![index].eventName;
 
   @override
-  String getStartTimeZone(int index) => appointments![index].startTimeZone;
-
-  @override
   String getNotes(int index) => appointments![index].description;
-
-  @override
-  String getEndTimeZone(int index) => appointments![index].endTimeZone;
 
   @override
   Color getColor(int index) => appointments![index].background;
@@ -254,8 +228,6 @@ class Meeting {
       this.background = Colors.green,
       this.isAllDay = false,
       this.eventName = '',
-      this.startTimeZone = '',
-      this.endTimeZone = '',
       this.description = ''});
 
   final String eventName;
@@ -263,7 +235,5 @@ class Meeting {
   final DateTime to;
   final Color background;
   final bool isAllDay;
-  final String startTimeZone;
-  final String endTimeZone;
   final String description;
 }
