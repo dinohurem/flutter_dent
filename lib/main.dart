@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_provider/extensions/time_of_day_extension.dart';
+import 'package:flutter_provider/screens/appointment_divider.dart';
 import 'package:intl/intl.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -25,7 +26,7 @@ class EventCalendar extends StatefulWidget {
   EventCalendarState createState() => EventCalendarState();
 }
 
-late Color _currentColor;
+Color _currentColor = Colors.white;
 List<Color> _colorCollection = <Color>[];
 List<String> _timeZoneCollection = <String>[];
 late DataSource _events;
@@ -40,13 +41,13 @@ String _notes = '';
 class EventCalendarState extends State<EventCalendar> {
   EventCalendarState();
 
-  CalendarView _calendarView = CalendarView.month;
+  CalendarView _calendarView = CalendarView.workWeek;
   late List<String> eventNameCollection;
   late List<Meeting> appointments;
 
   @override
   void initState() {
-    _calendarView = CalendarView.month;
+    _calendarView = CalendarView.workWeek;
     appointments = getMeetingDetails();
     _events = DataSource(appointments);
     _selectedAppointment = null;
@@ -58,10 +59,16 @@ class EventCalendarState extends State<EventCalendar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Padding(
-            padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
-            child: getEventCalendar(_calendarView, _events, onCalendarTapped)));
+      resizeToAvoidBottomInset: false,
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(25, 5, 25, 5),
+        child: getEventCalendar(
+          _calendarView,
+          _events,
+          onCalendarTapped,
+        ),
+      ),
+    );
   }
 
   SfCalendar getEventCalendar(
@@ -69,36 +76,32 @@ class EventCalendarState extends State<EventCalendar> {
       CalendarDataSource _calendarDataSource,
       CalendarTapCallback calendarTapCallback) {
     return SfCalendar(
-        headerDateFormat: 'MMM,yyy',
-        view: _calendarView,
-        dataSource: _calendarDataSource,
-        onTap: calendarTapCallback,
-        initialDisplayDate: DateTime(DateTime.now().year, DateTime.now().month,
-            DateTime.now().day, 0, 0, 0),
-        monthViewSettings: const MonthViewSettings(
-            appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
-        timeSlotViewSettings: const TimeSlotViewSettings(
-            minimumAppointmentDuration: Duration(minutes: 60)));
-  }
-
-  void onCalendarViewChange(String value) {
-    if (value == 'Day') {
-      _calendarView = CalendarView.day;
-    } else if (value == 'Week') {
-      _calendarView = CalendarView.week;
-    } else if (value == 'Work week') {
-      _calendarView = CalendarView.workWeek;
-    } else if (value == 'Month') {
-      _calendarView = CalendarView.month;
-    } else if (value == 'Timeline day') {
-      _calendarView = CalendarView.timelineDay;
-    } else if (value == 'Timeline week') {
-      _calendarView = CalendarView.timelineWeek;
-    } else if (value == 'Timeline work week') {
-      _calendarView = CalendarView.timelineWorkWeek;
-    }
-
-    setState(() {});
+      showNavigationArrow: true,
+      showDatePickerButton: true,
+      headerDateFormat: 'MMMM yyyy',
+      view: _calendarView,
+      // ignore: prefer_const_literals_to_create_immutables
+      allowedViews: [
+        CalendarView.day,
+        CalendarView.week,
+        CalendarView.workWeek,
+        CalendarView.month,
+        CalendarView.timelineDay,
+        CalendarView.timelineWeek,
+        CalendarView.timelineWorkWeek
+      ],
+      firstDayOfWeek: 1,
+      dataSource: _calendarDataSource,
+      onTap: calendarTapCallback,
+      initialDisplayDate: DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, 0, 0, 0),
+      monthViewSettings: const MonthViewSettings(
+          appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
+          navigationDirection: MonthNavigationDirection.vertical),
+      timeSlotViewSettings: const TimeSlotViewSettings(
+        minimumAppointmentDuration: Duration(minutes: 60),
+      ),
+    );
   }
 
   void onCalendarTapped(CalendarTapDetails calendarTapDetails) {
@@ -107,41 +110,43 @@ class EventCalendarState extends State<EventCalendar> {
       return;
     }
 
-    setState(() {
-      _selectedAppointment = null;
-      _subject = '';
-      _notes = '';
-      if (_calendarView == CalendarView.month) {
-        _calendarView = CalendarView.day;
-      } else {
-        if (calendarTapDetails.appointments != null &&
-            calendarTapDetails.appointments!.length == 1) {
-          final Meeting meetingDetails = calendarTapDetails.appointments![0];
-          _startDate = meetingDetails.from;
-          _endDate = meetingDetails.to;
-          _subject = meetingDetails.eventName == '(No title)'
-              ? ''
-              : meetingDetails.eventName;
-          _notes = meetingDetails.description;
-          _selectedAppointment = meetingDetails;
-          _currentColor = meetingDetails.background;
+    setState(
+      () {
+        _selectedAppointment = null;
+        _subject = '';
+        _notes = '';
+        if (_calendarView == CalendarView.month) {
+          _calendarView = CalendarView.day;
         } else {
-          final DateTime date = calendarTapDetails.date!;
-          _startDate = date;
-          _endDate = date.add(const Duration(hours: 1));
-        }
-        _startTime =
-            TimeOfDay(hour: _startDate.hour, minute: _startDate.minute);
-        _endTime = TimeOfDay(hour: _endDate.hour, minute: _endDate.minute);
+          if (calendarTapDetails.appointments != null &&
+              calendarTapDetails.appointments!.length == 1) {
+            final Meeting meetingDetails = calendarTapDetails.appointments![0];
+            _startDate = meetingDetails.from;
+            _endDate = meetingDetails.to;
+            _subject = meetingDetails.eventName == '(No title)'
+                ? ''
+                : meetingDetails.eventName;
+            _notes = meetingDetails.description;
+            _selectedAppointment = meetingDetails;
+            _currentColor = meetingDetails.background;
+          } else {
+            final DateTime date = calendarTapDetails.date!;
+            _startDate = date;
+            _endDate = date.add(const Duration(hours: 1));
+          }
+          _startTime =
+              TimeOfDay(hour: _startDate.hour, minute: _startDate.minute);
+          _endTime = TimeOfDay(hour: _endDate.hour, minute: _endDate.minute);
 
-        Navigator.push<Widget>(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => const AppointmentEditor(),
-          ),
-        );
-      }
-    });
+          Navigator.push<Widget>(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => const AppointmentEditor(),
+            ),
+          );
+        }
+      },
+    );
   }
 
   List<Meeting> getMeetingDetails() {
