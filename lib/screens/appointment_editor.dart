@@ -284,6 +284,36 @@ class AppointmentEditorState extends State<AppointmentEditor> {
                   return;
                 }
 
+                // Check if valid date.
+                for (var appointment in _events.appointments!) {
+                  if (_startDate.isAfter(appointment.from) &&
+                      _startDate.isBefore(appointment.to)) {
+                    var snackBar = SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Row(
+                        children: const <Widget>[
+                          Icon(Icons.warning),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Text(
+                            'Error: Please choose another time for the appointment.',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                      duration: const Duration(seconds: 5),
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    Navigator.pop(context);
+                    return;
+                  }
+                }
+
                 final List<Meeting> meetings = <Meeting>[];
                 if (_selectedAppointment != null) {
                   _events.appointments!.removeAt(

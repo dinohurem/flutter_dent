@@ -4,10 +4,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_provider/extensions/time_of_day_extension.dart';
+import 'package:flutter_provider/models/data_source.dart';
+import 'package:flutter_provider/models/meeting.dart';
 import 'package:flutter_provider/screens/appointment_divider.dart';
 import 'package:intl/intl.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+
+import 'screens/appointment_builder.dart';
 
 part 'screens/appointment_editor.dart';
 
@@ -56,54 +60,6 @@ class EventCalendarState extends State<EventCalendar> {
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(25, 5, 25, 5),
-        child: getEventCalendar(
-          _calendarView,
-          _events,
-          onCalendarTapped,
-        ),
-      ),
-    );
-  }
-
-  SfCalendar getEventCalendar(
-      CalendarView _calendarView,
-      CalendarDataSource _calendarDataSource,
-      CalendarTapCallback calendarTapCallback) {
-    return SfCalendar(
-      showNavigationArrow: true,
-      showDatePickerButton: true,
-      headerDateFormat: 'MMMM yyyy',
-      view: _calendarView,
-      // ignore: prefer_const_literals_to_create_immutables
-      allowedViews: [
-        CalendarView.day,
-        CalendarView.week,
-        CalendarView.workWeek,
-        CalendarView.month,
-        CalendarView.timelineDay,
-        CalendarView.timelineWeek,
-        CalendarView.timelineWorkWeek
-      ],
-      firstDayOfWeek: 1,
-      dataSource: _calendarDataSource,
-      onTap: calendarTapCallback,
-      initialDisplayDate: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 0, 0, 0),
-      monthViewSettings: const MonthViewSettings(
-          appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
-          navigationDirection: MonthNavigationDirection.vertical),
-      timeSlotViewSettings: const TimeSlotViewSettings(
-        minimumAppointmentDuration: Duration(minutes: 60),
-      ),
-    );
-  }
-
   void onCalendarTapped(CalendarTapDetails calendarTapDetails) {
     if (calendarTapDetails.targetElement != CalendarElement.calendarCell &&
         calendarTapDetails.targetElement != CalendarElement.appointment) {
@@ -146,6 +102,39 @@ class EventCalendarState extends State<EventCalendar> {
           );
         }
       },
+    );
+  }
+
+  SfCalendar getEventCalendar(
+      CalendarView _calendarView,
+      CalendarDataSource _calendarDataSource,
+      CalendarTapCallback calendarTapCallback) {
+    return SfCalendar(
+      showNavigationArrow: true,
+      showDatePickerButton: true,
+      headerDateFormat: 'MMMM yyyy',
+      view: _calendarView,
+      // ignore: prefer_const_literals_to_create_immutables
+      allowedViews: [
+        CalendarView.day,
+        CalendarView.week,
+        CalendarView.workWeek,
+        CalendarView.month
+      ],
+      firstDayOfWeek: 1,
+      dataSource: _calendarDataSource,
+      appointmentBuilder:
+          _calendarView != CalendarView.month ? appointmentBuilder : null,
+      onTap: calendarTapCallback,
+      // onViewChanged: calendarViewCallback,
+      initialDisplayDate: DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, 0, 0, 0),
+      monthViewSettings: const MonthViewSettings(
+          appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
+          navigationDirection: MonthNavigationDirection.vertical),
+      timeSlotViewSettings: const TimeSlotViewSettings(
+        minimumAppointmentDuration: Duration(minutes: 60),
+      ),
     );
   }
 
@@ -200,45 +189,28 @@ class EventCalendarState extends State<EventCalendar> {
 
     return meetingCollection;
   }
-}
 
-class DataSource extends CalendarDataSource {
-  DataSource(List<Meeting> source) {
-    appointments = source;
+  Widget appointmentBuilder(BuildContext context,
+      CalendarAppointmentDetails calendarAppointmentDetails) {
+    final Meeting meeting = calendarAppointmentDetails.appointments.first;
+    return AppointmentBuilder(
+      meeting: meeting,
+      calendarAppointmentDetails: calendarAppointmentDetails,
+    );
   }
 
   @override
-  bool isAllDay(int index) => appointments![index].isAllDay;
-
-  @override
-  String getSubject(int index) => appointments![index].eventName;
-
-  @override
-  String getNotes(int index) => appointments![index].description;
-
-  @override
-  Color getColor(int index) => appointments![index].background;
-
-  @override
-  DateTime getStartTime(int index) => appointments![index].from;
-
-  @override
-  DateTime getEndTime(int index) => appointments![index].to;
-}
-
-class Meeting {
-  Meeting(
-      {required this.from,
-      required this.to,
-      this.background = Colors.green,
-      this.isAllDay = false,
-      this.eventName = '',
-      this.description = ''});
-
-  final String eventName;
-  final DateTime from;
-  final DateTime to;
-  final Color background;
-  final bool isAllDay;
-  final String description;
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(25, 5, 25, 5),
+        child: getEventCalendar(
+          _calendarView,
+          _events,
+          onCalendarTapped,
+        ),
+      ),
+    );
+  }
 }
