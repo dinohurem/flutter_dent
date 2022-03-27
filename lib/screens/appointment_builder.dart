@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_provider/models/meeting.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-import '../models/meeting.dart';
-
 class AppointmentBuilder extends StatelessWidget {
+  final Meeting meeting;
+  final CalendarAppointmentDetails calendarAppointmentDetails;
+  final CalendarView calendarView;
+
   const AppointmentBuilder({
     Key? key,
+    required this.calendarView,
     required this.meeting,
     required this.calendarAppointmentDetails,
   }) : super(key: key);
-
-  final Meeting meeting;
-  final CalendarAppointmentDetails calendarAppointmentDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -37,25 +38,30 @@ class AppointmentBuilder extends StatelessWidget {
                     flex: 6,
                     child: Text(
                       meeting.eventName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
+                        fontSize: calendarView == CalendarView.month
+                            ? calendarAppointmentDetails.bounds.height / 2.5
+                            : calendarAppointmentDetails.bounds.height / 3,
                       ),
                     ),
                   ),
                   Flexible(
                     flex: 4,
-                    child: Text(
-                      DateFormat('HH:mm').format(meeting.from) +
-                          ' - ' +
-                          DateFormat('HH:mm').format(meeting.to),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize:
-                            calendarAppointmentDetails.bounds.height / 2.5,
-                      ),
-                    ),
+                    child: calendarView == CalendarView.month
+                        ? Container()
+                        : Text(
+                            DateFormat('HH:mm').format(meeting.from) +
+                                ' - ' +
+                                DateFormat('HH:mm').format(meeting.to),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize:
+                                  calendarAppointmentDetails.bounds.height / 3,
+                            ),
+                          ),
                   ),
                 ],
               ),
@@ -77,13 +83,19 @@ class AppointmentBuilder extends StatelessWidget {
                   Flexible(
                     fit: FlexFit.loose,
                     flex: 1,
-                    child: Text(
-                      meeting.description,
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: calendarView == CalendarView.month
+                        ? Container()
+                        : Text(
+                            meeting.description,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: calendarView == CalendarView.month
+                                    ? calendarAppointmentDetails.bounds.height /
+                                        5
+                                    : calendarAppointmentDetails.bounds.height /
+                                        3),
+                          ),
                   ),
                 ],
               ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_provider/screens/appointment_divider.dart';
+import 'package:flutter_provider/screens/drawer_item_widget.dart';
 
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({
@@ -14,112 +16,56 @@ class DrawerWidget extends StatelessWidget {
           const SizedBox(
             height: 8,
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.arrow_back_ios_new,
-              size: 25,
-              color: Colors.blue,
-            ),
-            title: const Text(
-              'SH Dent',
-              style: TextStyle(
-                fontSize: 25,
-                color: Colors.blue,
-              ),
-            ),
-            onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
+          DrawerItemWidget(
+            text: 'SH Dent',
+            icon: Icons.arrow_back_ios_new,
+            color: Colors.blue,
+            callback: () {
               Navigator.pop(context);
             },
           ),
           const SizedBox(
             height: 8,
           ),
-          const Divider(),
+          const AppointmentDivider(),
           const SizedBox(
             height: 8,
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.calendar_month,
-              size: 25,
-              color: Colors.red,
-            ),
-            title: const Text(
-              'Kalendar',
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-            onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
+          DrawerItemWidget(
+            text: 'Kalendar',
+            icon: Icons.calendar_month,
+            color: Colors.red,
+            callback: () {
               Navigator.pop(context);
             },
           ),
           const SizedBox(
             height: 8,
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.local_hospital,
-              size: 25,
-              color: Colors.blue,
-            ),
-            title: const Text(
-              'Doktori',
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-            onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
+          DrawerItemWidget(
+            text: 'Doktori',
+            icon: Icons.local_hospital,
+            color: Colors.blue,
+            callback: () {
               Navigator.pop(context);
             },
           ),
           const SizedBox(
             height: 8,
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.list,
-              size: 25,
-              color: Colors.green,
-            ),
-            title: const Text(
-              'Pacijenti',
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-            onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
+          DrawerItemWidget(
+            text: 'Pacijenti',
+            icon: Icons.list,
+            color: Colors.green,
+            callback: () {
               Navigator.pop(context);
             },
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.settings,
-              size: 25,
-              color: Colors.grey,
-            ),
-            title: const Text(
-              'Postavke',
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-            onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
+          DrawerItemWidget(
+            text: 'Postavke',
+            icon: Icons.settings,
+            color: Colors.grey,
+            callback: () {
               Navigator.pop(context);
             },
           ),
