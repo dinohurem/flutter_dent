@@ -18,55 +18,74 @@ class AppointmentBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          color: meeting.background,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: calendarAppointmentDetails.bounds.width / 40,
+        Flexible(
+          flex: 1,
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(width: 0, color: meeting.background),
+              color: meeting.background,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  meeting.eventName.length > 10
-                      ? meeting.eventName.substring(0, 10) + '...'
-                      : meeting.eventName,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: calendarAppointmentDetails.bounds.height / 2.5,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: calendarAppointmentDetails.bounds.width / 40,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    flex: 6,
+                    child: Text(
+                      meeting.eventName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
-                ),
-                Text(
-                  DateFormat('HH:mm').format(meeting.from) +
-                      ' - ' +
-                      DateFormat('HH:mm').format(meeting.to),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                    fontSize: calendarAppointmentDetails.bounds.height / 2.5,
+                  Flexible(
+                    flex: 4,
+                    child: Text(
+                      DateFormat('HH:mm').format(meeting.from) +
+                          ' - ' +
+                          DateFormat('HH:mm').format(meeting.to),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize:
+                            calendarAppointmentDetails.bounds.height / 2.5,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-        Expanded(
+        Flexible(
+          flex: 1,
           child: Container(
-            padding: EdgeInsets.zero,
-            color: meeting.background,
-            width: double.infinity,
-            height: double.infinity,
+            decoration: BoxDecoration(
+              border: Border.all(width: 0, color: meeting.background),
+              color: meeting.background,
+            ),
             child: Padding(
               padding: EdgeInsets.only(
                   left: calendarAppointmentDetails.bounds.width / 40),
-              child: Text(
-                meeting.description,
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: calendarAppointmentDetails.bounds.height / 3,
-                ),
+              child: Row(
+                children: [
+                  Flexible(
+                    fit: FlexFit.loose,
+                    flex: 1,
+                    child: Text(
+                      meeting.description,
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

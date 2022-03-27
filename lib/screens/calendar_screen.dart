@@ -6,6 +6,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_provider/extensions/time_of_day_extension.dart';
 import 'package:flutter_provider/models/data_source.dart';
 import 'package:flutter_provider/models/meeting.dart';
+import 'package:flutter_provider/screens/drawer_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -126,8 +127,6 @@ class CalendarScreenState extends State<CalendarScreen> {
       ),
       timeSlotViewSettings: const TimeSlotViewSettings(
         minimumAppointmentDuration: Duration(minutes: 60),
-        startHour: 8,
-        endHour: 22,
       ),
     );
   }
@@ -196,6 +195,11 @@ class CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: const Text(
+          'SH Dent - Kalendar',
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(25, 5, 25, 5),
         child: getCalendarScreen(
@@ -204,6 +208,8 @@ class CalendarScreenState extends State<CalendarScreen> {
           onCalendarTapped,
         ),
       ),
+      // ignore: prefer_const_constructors
+      drawer: DrawerWidget(),
     );
   }
 }

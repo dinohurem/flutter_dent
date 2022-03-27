@@ -287,7 +287,11 @@ class AppointmentEditorState extends State<AppointmentEditor> {
                 // Check if valid date.
                 for (var appointment in _events.appointments!) {
                   if (_startDate.isAfter(appointment.from) &&
-                      _startDate.isBefore(appointment.to)) {
+                      _startDate.isBefore(appointment.to) &&
+                      appointment.eventName !=
+                          _selectedAppointment!.eventName &&
+                      appointment.description !=
+                          _selectedAppointment!.description) {
                     var snackBar = SnackBar(
                       backgroundColor: Colors.red,
                       content: Row(
