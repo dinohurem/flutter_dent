@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "242838545867",
+    "project_id": "shdent-29f4c",
+    "storage_bucket": "shdent-29f4c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:242838545867:android:2cc1d0453ce5e9447cc24e",
+        "android_client_info": {
+          "package_name": "com.codiaq.dent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "242838545867-q3jf3ebct42nbhlhceqa0kde5q3as47d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfHhV83mXR0bvx0piIP-koShPfa7iqS7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "242838545867-q3jf3ebct42nbhlhceqa0kde5q3as47d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
