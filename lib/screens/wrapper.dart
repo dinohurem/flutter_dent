@@ -6,7 +6,7 @@ class Wrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return either home or authenticate widget
+    // Return either home or authenticate widget.
     return const Authenticate();
   }
 }
