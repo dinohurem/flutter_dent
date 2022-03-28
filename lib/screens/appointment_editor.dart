@@ -9,6 +9,7 @@ class AppointmentEditor extends StatefulWidget {
 
 class AppointmentEditorState extends State<AppointmentEditor> {
   int _appointmentDuration = 0;
+  Color _chosenColor = Colors.white;
 
   @override
   void initState() {
@@ -16,7 +17,11 @@ class AppointmentEditorState extends State<AppointmentEditor> {
     super.initState();
   }
 
-  void changeColor(Color color) => setState(() => _currentColor = color);
+  // Method for choosing color via alert dialog.
+  void _chooseColor(Color color) => setState(() => _chosenColor = color);
+
+  // Method for setting color of appointment when OK pressed in alert dialog.
+  void _changeColor(Color color) => setState(() => _currentColor = color);
 
   String getTile() {
     return _subject.isEmpty ? 'New appointment' : 'Appointment details';
@@ -171,10 +176,13 @@ class AppointmentEditorState extends State<AppointmentEditor> {
             _currentColor == Colors.white
                 ? 'Please choose a color'
                 : '#${_currentColor.value.toRadixString(16).substring(2, 8)}',
-            style: const TextStyle(fontWeight: FontWeight.w400),
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+            ),
           ),
           onTap: () async {
-            showDialog<Widget>(
+            // ignore: unused_local_variable
+            var result = await showDialog<Widget>(
               context: context,
               barrierDismissible: true,
               useSafeArea: true,
@@ -185,20 +193,58 @@ class AppointmentEditorState extends State<AppointmentEditor> {
                     color: Colors.grey,
                     fontWeight: FontWeight.w400,
                   ),
-                  title:
-                      const Text('Please choose a color for the appointment'),
+                  title: const Center(
+                    child: Text(
+                      'Please choose a color for the appointment',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
                   content: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
                     child: MaterialPicker(
                       pickerColor: Colors.red,
-                      onColorChanged: changeColor,
+                      onColorChanged: _chooseColor,
                       enableLabel: true,
                       portraitOnly: true,
                     ),
                   ),
+                  actions: [
+                    TextButton(
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(
+                          color: Colors.blue,
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _changeColor(_chosenColor);
+                          Navigator.of(context).pop();
+                        });
+                      },
+                    ),
+                    TextButton(
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Colors.blue,
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(
+                          () {
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 );
               },
-            ).then((dynamic value) => setState(() {}));
+            );
           },
         ),
         const AppointmentDivider(),
@@ -213,7 +259,8 @@ class AppointmentEditorState extends State<AppointmentEditor> {
             onChanged: (String value) {
               _notes = value;
             },
-            keyboardType: TextInputType.multiline,
+            enabled: true,
+            keyboardType: TextInputType.text,
             maxLines: null,
             style: const TextStyle(
                 fontSize: 18,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_provider/screens/appointment_divider.dart';
 import 'package:flutter_provider/screens/drawer_item_widget.dart';
+import 'package:flutter_provider/screens/patients_screen.dart';
 
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({
@@ -12,62 +13,52 @@ class DrawerWidget extends StatelessWidget {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
-        children: [
-          const SizedBox(
+        children: const [
+          SizedBox(
             height: 8,
           ),
           DrawerItemWidget(
             text: 'SH Dent',
             icon: Icons.arrow_back_ios_new,
             color: Colors.blue,
-            callback: () {
-              Navigator.pop(context);
-            },
+            destination: PatientsScreen(),
           ),
-          const SizedBox(
+          SizedBox(
             height: 8,
           ),
-          const AppointmentDivider(),
-          const SizedBox(
+          AppointmentDivider(),
+          SizedBox(
             height: 8,
           ),
           DrawerItemWidget(
             text: 'Kalendar',
             icon: Icons.calendar_month,
             color: Colors.red,
-            callback: () {
-              Navigator.pop(context);
-            },
+            destination: PatientsScreen(),
           ),
-          const SizedBox(
+          SizedBox(
             height: 8,
           ),
           DrawerItemWidget(
             text: 'Doktori',
             icon: Icons.local_hospital,
             color: Colors.blue,
-            callback: () {
-              Navigator.pop(context);
-            },
+            destination: PatientsScreen(),
           ),
-          const SizedBox(
+          SizedBox(
             height: 8,
           ),
           DrawerItemWidget(
             text: 'Pacijenti',
             icon: Icons.list,
             color: Colors.green,
-            callback: () {
-              Navigator.pop(context);
-            },
+            destination: PatientsScreen(),
           ),
           DrawerItemWidget(
             text: 'Postavke',
             icon: Icons.settings,
             color: Colors.grey,
-            callback: () {
-              Navigator.pop(context);
-            },
+            destination: PatientsScreen(),
           ),
         ],
       ),

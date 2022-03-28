@@ -5,6 +5,7 @@ import 'package:flutter_provider/models/meeting.dart';
 List<Color> _colorCollection = <Color>[];
 List<String> _timeZoneCollection = <String>[];
 late List<String> eventNameCollection;
+List<String> descriptionCollection = <String>[];
 
 List<Meeting> getMeetingDetails() {
   final List<Meeting> meetingCollection = <Meeting>[];
@@ -19,6 +20,17 @@ List<Meeting> getMeetingDetails() {
   eventNameCollection.add('Project Completion');
   eventNameCollection.add('Release updates');
   eventNameCollection.add('Performance Check');
+
+  descriptionCollection.add('rasgrsg Meeting');
+  descriptionCollection.add('srg Execution');
+  descriptionCollection.add('ar Plan');
+  descriptionCollection.add('aa');
+  descriptionCollection.add('aa');
+  descriptionCollection.add('aeaer Meeting');
+  descriptionCollection.add('try');
+  descriptionCollection.add('rth Completion');
+  descriptionCollection.add('r updates');
+  descriptionCollection.add('rthhhrth Check');
 
   _colorCollection = <Color>[];
   _colorCollection.add(const Color(0xFF0F8644));
@@ -47,7 +59,7 @@ List<Meeting> getMeetingDetails() {
               .add(Duration(days: (month * 30) + day))
               .add(Duration(hours: hour + 1)),
           background: _colorCollection[random.nextInt(9)],
-          description: '',
+          description: descriptionCollection[random.nextInt(7)],
           eventName: eventNameCollection[random.nextInt(7)],
         ));
       }

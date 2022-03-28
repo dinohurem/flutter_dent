@@ -114,8 +114,7 @@ class CalendarScreenState extends State<CalendarScreen> {
       showDatePickerButton: true,
       headerDateFormat: 'MMMM yyyy',
       view: _calendarView,
-      // ignore: prefer_const_literals_to_create_immutables
-      allowedViews: [
+      allowedViews: const [
         CalendarView.day,
         CalendarView.week,
         CalendarView.workWeek,
@@ -124,17 +123,19 @@ class CalendarScreenState extends State<CalendarScreen> {
       showCurrentTimeIndicator: true,
       firstDayOfWeek: 1,
       dataSource: _calendarDataSource,
-      appointmentBuilder:
-          _calendarView != CalendarView.month ? appointmentBuilder : null,
+      appointmentBuilder: appointmentBuilder,
       onTap: calendarTapCallback,
       onViewChanged: _viewChangedCallback,
       initialDisplayDate: DateTime.now(),
       monthViewSettings: const MonthViewSettings(
         appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
         navigationDirection: MonthNavigationDirection.vertical,
+        appointmentDisplayCount: 4,
       ),
       timeSlotViewSettings: const TimeSlotViewSettings(
-        minimumAppointmentDuration: Duration(minutes: 60),
+        dayFormat: 'EEE',
+        timeFormat: 'HH:mm',
+        minimumAppointmentDuration: Duration(minutes: 30),
       ),
     );
   }

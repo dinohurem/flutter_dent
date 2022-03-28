@@ -4,13 +4,13 @@ class DrawerItemWidget extends StatefulWidget {
   final String text;
   final IconData icon;
   final Color color;
-  final Function callback;
+  final Widget destination;
   const DrawerItemWidget({
     Key? key,
     required this.text,
     required this.icon,
     required this.color,
-    required this.callback,
+    required this.destination,
   }) : super(key: key);
 
   @override
@@ -32,7 +32,9 @@ class _DrawerItemWidgetState extends State<DrawerItemWidget> {
           fontSize: 20,
         ),
       ),
-      onTap: () => widget.callback,
+      onTap: () {
+        Navigator.pop(context);
+      },
     );
   }
 }
