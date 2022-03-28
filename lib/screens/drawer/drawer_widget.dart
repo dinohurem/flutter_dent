@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_provider/screens/calendar/appointment_divider.dart';
-import 'package:flutter_provider/screens/drawer_item_widget.dart';
+import 'package:flutter_provider/screens/drawer/drawer_item_widget.dart';
 import 'package:flutter_provider/screens/patients_screen.dart';
 
 class DrawerWidget extends StatelessWidget {
