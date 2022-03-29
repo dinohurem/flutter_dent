@@ -1,15 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_provider/models/user.dart';
+import 'package:flutter_provider/models/doctor.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Create doctor object based on Firebase user.
   Doctor? _doctorFromFirebaseUser(User? user) {
-    // ignore: unnecessary_null_comparison
     return user != null
         ? Doctor(
             uid: user.uid,
+            approved: true,
           )
         : null;
   }
@@ -37,4 +37,13 @@ class AuthService {
   // Register with email/password.
 
   // Sign out.
+  Future signOut() async {
+    try {
+      return await _auth.signOut();
+    } catch (e) {
+      // ignore: avoid_print
+      print(e.toString());
+      return null;
+    }
+  }
 }

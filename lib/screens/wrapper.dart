@@ -1,6 +1,9 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
-import 'package:flutter_provider/models/user.dart';
+import 'package:flutter_provider/models/doctor.dart';
 import 'package:flutter_provider/screens/authenticate/authenticate.dart';
+import 'package:flutter_provider/screens/home.dart';
 import 'package:provider/provider.dart';
 
 class Wrapper extends StatelessWidget {
@@ -9,8 +12,11 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final doctor = Provider.of<Doctor?>(context);
-    print(doctor);
-    // Return either home or authenticate widget.
-    return const Authenticate();
+
+    if (doctor == null) {
+      return Authenticate();
+    } else {
+      return Home();
+    }
   }
 }

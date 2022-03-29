@@ -1,6 +1,9 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_provider/models/user.dart';
+import 'package:flutter_provider/models/drawer_state_info.dart';
+import 'package:flutter_provider/models/doctor.dart';
 import 'package:flutter_provider/screens/wrapper.dart';
 import 'package:flutter_provider/services/auth.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +19,7 @@ void main() async {
     ),
   );
   runApp(
-    const MyApp(),
+    MyApp(),
   );
 }
 
@@ -25,10 +28,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<Doctor?>.value(
-      initialData: null,
-      value: AuthService().doctor,
-      child: const MaterialApp(
+    return MultiProvider(
+      providers: [
+        StreamProvider<Doctor?>.value(
+          initialData: null,
+          value: AuthService().doctor,
+        ),
+        ChangeNotifierProvider<DrawerStateInfo?>(
+          create: (_) => DrawerStateInfo(),
+        )
+      ],
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Wrapper(),
       ),
