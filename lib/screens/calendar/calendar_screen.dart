@@ -2,11 +2,11 @@ library event_calendar;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:flutter_provider/data/calendar_items.dart';
 import 'package:flutter_provider/extensions/time_of_day_extension.dart';
 import 'package:flutter_provider/models/data_source.dart';
 import 'package:flutter_provider/models/meeting.dart';
 import 'package:flutter_provider/screens/drawer/drawer_widget.dart';
+import 'package:flutter_provider/shared/calendar_items.dart';
 import 'package:intl/intl.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';

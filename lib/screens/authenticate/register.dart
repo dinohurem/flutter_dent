@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_print
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_provider/services/auth.dart';
@@ -6,15 +5,15 @@ import 'package:flutter_provider/shared/constants.dart';
 import 'package:flutter_provider/shared/loading.dart';
 import 'package:flutter_provider/shared/size_config.dart';
 
-class SignIn extends StatefulWidget {
+class Register extends StatefulWidget {
   final Function toggleView;
-  const SignIn({Key? key, required this.toggleView}) : super(key: key);
+  const Register({Key? key, required this.toggleView}) : super(key: key);
 
   @override
-  State<SignIn> createState() => _SignInState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _SignInState extends State<SignIn> {
+class _RegisterState extends State<Register> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   String email = '';
@@ -35,7 +34,7 @@ class _SignInState extends State<SignIn> {
               backgroundColor: Colors.blue[400],
               elevation: 0.0,
               title: const Text(
-                'SH Dent - Prijava',
+                'SH Dent - Registracija',
               ),
               actions: [
                 TextButton.icon(
@@ -46,7 +45,7 @@ class _SignInState extends State<SignIn> {
                     Icons.person,
                   ),
                   label: const Text(
-                    'Register form',
+                    'Login form',
                   ),
                   style: TextButton.styleFrom(
                     primary: Colors.white,
@@ -100,18 +99,18 @@ class _SignInState extends State<SignIn> {
                             loading = true;
                           });
                           dynamic result = await _auth
-                              .signInWithEmailAndPassword(email, password);
+                              .registerWithEmailAndPassword(email, password);
 
                           if (result == null) {
                             setState(() {
-                              error = 'Molimo provjerite kredencijale.';
+                              error = 'Molimo unesite valjani email.';
                               loading = false;
                             });
                           }
                         }
                       },
                       child: const Text(
-                        'Prijavi se',
+                        'Registruj se',
                         style: TextStyle(
                           color: Colors.white,
                         ),
@@ -127,7 +126,7 @@ class _SignInState extends State<SignIn> {
                       error,
                       style: TextStyle(
                         color: Colors.red,
-                        fontSize: SizeConfig.safeBlockVertical! * 1.5,
+                        fontSize: SizeConfig.safeBlockHorizontal! * 1.5,
                       ),
                     )
                   ],

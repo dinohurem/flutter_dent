@@ -14,7 +14,7 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.grey,
         title: const Text(
           'SH Dent - Settings',
         ),
